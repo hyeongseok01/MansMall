@@ -66,7 +66,7 @@
   <!-- Custom styles for this template -->
 <%@ include file="/WEB-INF/views/common/bootcss.jsp" %>
    <script src="http://code.jquery.com/jquery-latest.js"></script>
-  
+
 </head>
 
 <body>
@@ -126,23 +126,28 @@
 						</c:forEach>
                
           </div>
-         <div class="text-center">
-         <!-- 페이징 기능 -->
-         <ul class="pagination justify-content-center" style="display:center-block">
-             <c:if test="${pm.prev}">
-               <li><a class="page-link" href="${pm.makeQuery(pm.startPage-1)}">&laquo;</a></li>
-            </c:if>
-            <c:forEach begin="${pm.startPage}" end="${pm.endPage}" var="idx">
-                <li class="page-item"<c:out value="${pm.cri.page == idx?'class:active':''}"/>>
-                   <a class="page-link" href="${pm.makeQuery(idx)} ">${idx}</a>
-                </li>
-             </c:forEach>
-              <c:if test="${pm.next && pm.endPage>0}">
-               <li><a class="page-link" href="${pm.makeQuery(pm.endPage+1)}">&raquo;</a></li>
-            </c:if>
-         </ul>
-         </div>
-         </div>
+				<div class="text-center">
+					<!-- 페이징 기능 -->
+					<ul class="pagination justify-content-center"
+						style="display: center-block">
+						<c:if test="${pm.prev}">
+							<li><a class="page-link"
+								href="${pm.makeQuery(pm.startPage-1)}">&laquo;</a></li>
+						</c:if>
+						<c:forEach begin="${pm.startPage}" end="${pm.endPage}" var="idx">
+							<li class="page-item"><a
+								class="page-link ${pm.cri.page == idx?'page-active':''}"
+								href="${pm.makeQuery(idx)}"
+								style="margin-top: 0; height: 40px; color: black; border: 1px solid orange;">${idx}</a>
+							</li>
+						</c:forEach>
+						<c:if test="${pm.next && pm.endPage>0}">
+							<li><a class="page-link"
+								href="${pm.makeQuery(pm.endPage+1)}">&raquo;</a></li>
+						</c:if>
+					</ul>
+				</div>
+			</div>
 
         </div>
         <!-- /.row -->
@@ -161,5 +166,11 @@
 
 </body>
 
+<style type="text/css">
+.page-active{
+	background-color:orange;
+}
+
+</style>
 </html>
 
