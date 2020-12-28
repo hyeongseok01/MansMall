@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- 정적자원(html, css, img, js)등을 uri 절대경로로 사용하기 위한 매핑처리 -->
+    <resources mapping="/resources/**" location="/resources/" />  
+	
+		<!--  클라이언트에서 사용가능하기위한 경로설정 -->
+	<resources mapping="/bower_components/**" location="/resources/bower_components/" />
+	<resources mapping="/dist/**" location="/resources/dist/" />
+	<resources mapping="/plugins/**" location="/resources/plugins/" />
+	<resources mapping="/ckeditor/**" location="/resources/bower_components/ckeditor/" />
+	<resources mapping="/css/**" location="/WEB-INF/views/css/" />
+	<resources mapping="/vendor/**" location="/WEB-INF/views/vendor/" />
+	<resources mapping="/upload/**" location="/resources/upload/" />
+	<resources mapping="/js/**" location="/WEB-INF/views/js/" />
+	<resources mapping="/image/**" location="/resources/image/" />
+	
+	<beans:bean id="loginInterceptor" class="com.mansmall.interceptor.LoginInterceptor"></beans:bean>
+	<beans:bean id="authInterceptor" class="com.mansmall.interceptor.AuthInterceptor"></beans:bean>
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/member/checkPw"/>
+			<mapping path="/member/delete"/>
+			<mapping path="/board/*"/>
+			<mapping path="/cart/*"/>
+			<mapping path="/order/*"/>
+			<beans:ref bean="loginInterceptor"/>	
+		</interceptor>
+		
+		<interceptor>
+			<mapping path="/admin/**"/>
+			<exclude-mapping path="/admin/main"/>
+			<exclude-mapping path="/admin/login"/>
+			<exclude-mapping path="/admin/logout"/>
+			<beans:ref bean="authInterceptor"/>	
+		</interceptor>
+		
+	</interceptors>
+	
+	
+	
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<!-- 클라이언트로 부터 전송되어 온 파일을 스프링에서 처리하는 기능 -->
+	<!-- MultipartFile file 주입됨 -->
+	<beans:bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="10485760" />
+	</beans:bean>
+
+	<!-- 파일 업로드 Path -->
+	<beans:bean id="uploadPath" class="java.lang.String">
+		<beans:constructor-arg value="c:\\dev\\upload"></beans:constructor-arg>
+	</beans:bean>
+	
+		<!-- packages의 클래스 bean객체 설정구문 -->
+			<context:component-scan base-package="com.mansmall.controller" />
+			<context:component-scan base-package="com.mansmall.service" />
+			<context:component-scan base-package="com.mansmall.persistence" />
+			<context:component-scan base-package="com.mansmall.domain" />
+			<context:component-scan base-package="com.mansmall.dto" />	
+	
+</beans:beans>

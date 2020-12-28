@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mansmall.mappers.MemberMapper">
+<!-- MemberVO 가져오기 -->
+<select id="readUserInfo" parameterType="string" resultType="MemberVO">
+  	select mb_id, mb_name, mb_pw, mb_email, mb_zipcode, mb_addr, mb_addr_d,
+  	 	   mb_phone, mb_nickname, mb_accept_e, mb_point, mb_date_sub, 
+  	 	   mb_date_up, mb_date_last, mb_authcode
+  	from  member_tbl
+  	where mb_id =#{mb_id}
+
+</select>
+
+<!-- 회원가입 -->
+<insert id="join" parameterType="MemberVO" >
+	insert into member_tbl( mb_id, mb_pw, mb_name, mb_email, mb_zipcode,   
+			mb_addr, mb_addr_d, mb_phone, mb_nickname, mb_accept_e)
+	values(#{mb_id}, #{mb_pw}, #{mb_name},  #{mb_email}, #{mb_zipcode},
+		   #{mb_addr}, #{mb_addr_d}, #{mb_phone}, #{mb_nickname}, #{mb_accept_e})
+</insert>
+
+<!--아이디 중복체크 -->
+<select id="checkId" parameterType="string" resultType="string">
+	select mb_id
+	from member_tbl
+	where mb_id=#{mb_id}
+</select>
+
+<!-- 닉네임 중복체크 -->
+<select id="checkNickName" parameterType="string" resultType="string" >
+	select mb_nickname
+	from member_tbl
+	where mb_nickname=#{mb_nickname}
+</select>
+
+<!-- 로그인(LoginDTO 가져옴) 비번을 파라미터 사용안하고 잇음에 주의 -->
+<select id="login" parameterType="LoginDTO"  resultType="LoginDTO" >
+	select mb_id, mb_pw, mb_nickname, mb_name, mb_point, mb_Date_last
+	from member_tbl
+	where mb_id=#{mb_id}
+</select>
+
+<!--로그인 시간 업데이트 -->
+<update id="loginTimeUpdate" parameterType="string">
+	update member_tbl
+	set mb_Date_last =sysdate
+	where mb_id=#{mb_id}
+</update>
+
+<!-- 회원정보 수정 -->
+<update id="modifyMemberInfo"  parameterType="MemberVO" >
+	update member_tbl
+	set mb_id=#{mb_id},mb_pw = #{mb_pw}, mb_name= #{mb_name}, mb_email=#{mb_email},
+	    mb_zipcode=#{mb_zipcode}, mb_addr=#{mb_addr}, mb_addr_d=#{mb_addr_d}, 
+	    mb_phone=#{mb_phone},mb_nickname=#{mb_nickname}, mb_accept_e=#{mb_accept_e} 
+	where mb_id=#{mb_id}
+</update>
+
+<!-- 비밀번호 변경 -->
+<update id="changePw" parameterType="LoginDTO">
+	update member_tbl
+	set mb_pw = #{mb_pw}	
+	where mb_id =#{mb_id}
+</update>
+
+<!-- 회원 탈퇴 -->	
+<delete id="deleteMember" parameterType="string">
+	delete from member_tbl
+	where mb_id=#{mb_id}
+</delete>
+
+</mapper>

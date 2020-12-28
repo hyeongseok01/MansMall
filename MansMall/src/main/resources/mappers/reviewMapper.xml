@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mansmall.mappers.reviewMapper">
+	
+	<!-- 상품후기 총 개수 -->
+	<select id="countReview" parameterType="int" resultType="int">
+		select count(rev_num)
+		from review_tbl
+		where pdt_num=#{pdt_num}
+	</select>
+	
+	<!-- 상품후기 쓰기 -->
+	<insert id="writeReview" parameterType="ReviewVO">
+		insert into review_tbl(rev_num, mb_id, pdt_num, rev_content, rev_score, rev_date_reg)
+		values(seq_rev_num.nextval, #{mb_id}, #{pdt_num}, #{rev_content}, #{rev_score}, sysdate)
+	</insert>
+	
+	<!-- 상품후기 리스트(페이지포함) -->
+	<select id="listReview" parameterType="map" resultType="ReviewVO">
+		select rev_num, mb_id, pdt_num, rev_score, rev_content, rev_date_reg
+		from (select rev_num, mb_id, pdt_num, rev_score, rev_content, rev_date_reg,
+				row_number() over(order by rev_num desc) p_seq 
+				from review_tbl
+				where pdt_num=#{pdt_num})
+		where p_seq between #{cri.rowStart} and #{cri.rowEnd}		
+	</select>
+	
+	<!-- 상품 후기 삭제 -->
+	<delete id="deleteReview" parameterType="int">
+		delete from review_tbl
+		where rev_num=#{rev_num}
+	</delete>
+	
+	<!-- 상품 후기 수정 -->
+	<update id="modifyReview" parameterType="ReviewVO">
+		update review_tbl
+		set rev_content =#{rev_content}, rev_score=#{rev_score}
+		where rev_num=#{rev_num}
+	</update>
+</mapper>

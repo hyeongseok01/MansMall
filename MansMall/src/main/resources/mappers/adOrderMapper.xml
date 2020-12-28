@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mansmall.mappers.adOrderMapper">
+
+	<!-- 주문 목록 -->
+	<select id="adOrderList"  parameterType="Criteria" resultType="OrderVO">
+		select odr_addr_d, odr_code, odr_name, mb_id,
+		 	 odr_addr, odr_zipcode, odr_phone, odr_totalprice, odr_date, delivery
+		 from (select odr_addr_d, odr_code, odr_name, mb_id,
+		 	 odr_addr, odr_zipcode, odr_phone, odr_totalprice, odr_date, delivery,
+		 		row_number() over (order by odr_code asc) p_seq from order_tbl)
+			where p_seq between #{rowStart} and #{rowEnd}
+	</select>
+	
+	<!-- 주문 개수 -->
+	<select id="adOrderListCount" parameterType="string" resultType="int">
+		select count(odr_code) from order_tbl
+	</select>
+	
+	<!-- 배송현황 수정 -->
+	 <update id="deliveryModify" parameterType="orderVO">
+	 	update order_tbl
+		set delivery = #{delivery}
+		where odr_code = #{odr_code}
+	 </update>
+</mapper>

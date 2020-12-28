@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mansmall.mappers.BoardMapper">
+	<!-- 동적 sql -->
+	<!-- 검색 조건 :  공통으로 사용하는 구문 -->
+	<sql id="search">
+		<if test="searchType != null">
+		<!-- 제목 -->
+		<if test="searchType == 'title'.toString()">
+			where brd_title like  '%' ||  #{keyword} || '%'
+		</if>
+		<!-- 작성자 -->
+		<if test="searchType == 'writer'.toString()">
+			where mb_id like  '%' ||  #{keyword} || '%'
+		</if>
+		<!-- 내용 -->
+		<if test="searchType == 'content'.toString()">
+			where brd_content like  '%' ||  #{keyword} || '%'
+		</if>
+		<!-- 제목+내용 -->
+		<if test="searchType == 'titleContent'.toString()">
+			where( brd_title like  '%' ||  #{keyword} || '%')
+			 or (brd_content like  '%' ||  #{keyword} || '%')
+		</if>
+		</if>
+	</sql>
+   <!-- [MySQL]
+		title like CONCAT('%',#{keyword},'%')
+		
+		[Oracle]
+		title like '%' ||  #{keyword} || '%' -->
+	
+	<insert id="insert" parameterType="BoardVO" >
+		insert into board_tbl
+			   (brd_num, mb_id, brd_title, brd_content)
+		values (seq_brd_num.nextval, #{mb_id}, #{brd_title}, #{brd_content})
+	</insert>
+	
+	<select id="getArticleList" resultType="BoardVO" parameterType="SearchVO">
+		  select brd_num, mb_id, brd_title, brd_content, brd_date_reg, view_cnt
+		  from (select brd_num, mb_id, brd_title, brd_content, brd_date_reg, view_cnt,
+		 	    row_number() over(order by brd_num desc) p_seq 
+		 		from board_tbl
+		 		<include refid="search"/>) 
+		 		where p_seq between #{boardRowStart} and #{boardRowEnd} 
+		 		order by brd_num desc
+	</select>
+	
+	<select id="BoardCount" parameterType="SearchVO" resultType="int">
+		<![CDATA[
+		select count(brd_num)
+		from board_tbl
+		]]>
+		<include refid="search"/>	
+	</select>
+	
+	<select id="getArticle" parameterType="int" resultType="BoardVO">
+		 select * 
+		 from board_tbl
+		 where brd_num =#{brd_num}
+	</select>
+	<!-- 조회수 상승 -->
+	<update id="updateViewCnt">
+		update board_tbl 
+		set view_cnt = view_cnt + 1
+		where brd_num = #{brd_num}
+	</update>
+	
+	<update id="update" parameterType="BoardVO" >
+		update board_tbl
+		set brd_title=#{brd_title}, brd_content=#{brd_content}
+		where brd_num=#{brd_num}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from board_tbl
+		where brd_num=#{brd_num}
+	</delete>
+	
+</mapper>
