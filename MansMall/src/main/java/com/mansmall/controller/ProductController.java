@@ -147,7 +147,6 @@ public class ProductController {
 		pm.setTotalCount(count);
 		
 		model.addAttribute("pm", pm);
-	
-		
+
 	}
 }   

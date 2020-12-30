@@ -45,6 +45,7 @@ $(document).ready(function(){
 		var pdt_num = $("#pdt_num").val();
 		
 		// 선택된 별점 개수를 가져옴
+		// each는 반복함수  i는 객체의 key값 e는 값을 의미
 		$("#star_grade a").each(function(i, e){
 			if($(this).attr('class')=='on'){
 				rev_score += 1;

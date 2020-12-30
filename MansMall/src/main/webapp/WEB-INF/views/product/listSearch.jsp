@@ -119,19 +119,20 @@
 					<div class="text-center">
 						<ul class="pagination justify-content-center" style="display: center-block">
 							<c:if test="${pm.prev}">
-								<li><a href="listSearch${pm.makeSearch(pm.startPage-1)}">&laquo;</a>
+								<li><a class="page-link" href="listSearch${pm.makeSearch(pm.startPage-1)}">&laquo;</a>
 								</li>
 							</c:if>
 
 							<c:forEach begin="${pm.startPage}" end="${pm.endPage}"
 								var="idx">
-								<li <c:out value="${pm.cri.page== idx?'class=active':''}"/>>
-									<a href="listSearch${pm.makeSearch(idx)}">${idx}</a>
+								<li class="page-item">
+									<a  class="page-link ${pm.cri.page== idx?'page-active':''}" href="listSearch${pm.makeSearch(idx)}" 
+									style="margin-top: 0; height: 40px; color: black; border: 1px solid orange;">${idx}</a>
 								</li>
 							</c:forEach>
 
 							<c:if test="${pm.next && pm.endPage > 0}">
-								<li><a href="listSearch${pm.makeSearch(pm.endPage +1)}">&raquo;</a>
+								<li><a  class="page-link" href="listSearch${pm.makeSearch(pm.endPage +1)}">&raquo;</a>
 								</li>
 							</c:if>
 						</ul>
@@ -160,5 +161,10 @@
   <%@ include file="/WEB-INF/views/common/bootjs.jsp" %>
 
 </body>
+<style type="text/css">
+.page-active{
+	background-color:orange;
+}
 
+</style>
 </html>

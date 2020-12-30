@@ -59,6 +59,6 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public ProductVO readProduct(int pdt_num) throws Exception {
 		return dao.readProduct(pdt_num);
-		}
+	}
 	
 }

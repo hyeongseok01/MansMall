@@ -243,7 +243,7 @@ public class MemberController {
 		 *  자바 객체를 HTTP 응답 본문의 객체로 변환하여 클라이언트로 전송 
 		 */
 		@ResponseBody
-		@RequestMapping("checkPwAjax")
+		@RequestMapping(value = "checkPwAjax", method = RequestMethod.POST)
 		public ResponseEntity<String> checkPwAjax(@RequestParam("mb_pw") String mb_pw, HttpSession session) {
 			
 			logger.info("=====checkPwAjax() execute...");

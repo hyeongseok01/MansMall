@@ -40,7 +40,7 @@ public class ProductVO {
 	
 	// 업로드 파일
 	private MultipartFile file1;  // insert.jsp <input type="file" id="file1" name="file1" class="form-control" />
-
+	
 	public int getPdt_num() {
 		return pdt_num;
 	}

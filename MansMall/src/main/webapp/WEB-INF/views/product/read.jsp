@@ -39,7 +39,7 @@
                 	<i class="fa fa-clock-o"></i>{{prettifyDate rev_date_reg}}
                 </span>
                 <h3 class="timeline-header">
-					<strong>{{checkRating rev_score}} <p class='rev_score' style="display:inline-block;">{{rev_score}}</p></strong> 
+					<strong>{{checkRating rev_score}}</strong> 
 					</h3>
                 <div class="timeline-body">
 					<p style="float:right;">작성자: {{mb_id}}</p> <br>
@@ -59,7 +59,7 @@
 
 		/* 상품 목록 버튼 클릭 시 */
 		$("#btn_list").on("click", function(){
-			location.href="/product/list${pm.makeQuery(pm.cri.page)}&cg_code=${vo.cg_code}";
+			location.href="/product/list${pm.makeQuery(1)}&cg_code=${vo.cg_code}";
 		});
 
 		/* 
@@ -135,7 +135,7 @@
         color: lightgray;
     }
     #star_grade a.on{
-        color: black;
+        color: orange;
     }
     
     #star_grade_modal a{
@@ -144,7 +144,7 @@
         color: lightgray;
     }
     #star_grade_modal a.on{
-        color: black;
+        color: orange;
     }
     
     .popup {position: absolute;}
@@ -246,10 +246,11 @@
 							     	<img id="popup_img">
 							    </div>
 						    	<form role="form" action="modifyPage" method="post">
+						    	<%-- 
 									<input type='hidden' name='bno' value="${boardVO.bno}">
 									<input type='hidden' name='page' value="${cri.page}"> 
 									<input type='hidden' name='perPageNum' value="${cri.perPageNum}">
-									<%-- 
+									
 									<input type='hidden' name='searchType' value="${cri.searchType}">
 									<input type='hidden' name='keyword' value="${cri.keyword}">
 									 --%>
@@ -297,10 +298,7 @@
 										<div class="pagination justify-content-center" style="display:center-block">
 											<ul id="pagination"  class="pagination pagination-sm no-margin "></ul>
 									 	</div>
-									 	
-									
-									 
-									 
+	
 									 <%-- Modal : 상품후기 수정/삭제 팝업 --%>
 									<div id="modifyModal"  role="dialog" style="display: none; position:absolute; width:500px; ">
 									  <div class="modal-dialog">
