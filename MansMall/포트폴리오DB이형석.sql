@@ -1,0 +1,239 @@
+
+--1. 회원가입 테이블
+
+CREATE TABLE MEMBER_TBL(
+	MB_ID					VARCHAR2(15)						PRIMARY KEY,
+	MB_NAME             	VARCHAR2(30)						NOT NULL,
+	MB_PW                 	VARCHAR2(60)						NOT NULL, 
+	MB_EMAIL            	VARCHAR2(50)						NOT NULL,
+	MB_ZIPCODE             	CHAR(5) 							NOT NULL,
+	MB_ADDR              	VARCHAR2(100)						NOT NULL,
+	MB_ADDR_D		    	VARCHAR2(100)						NOT NULL,
+	MB_PHONE             	VARCHAR2(15)						NOT NULL,
+	MB_NICKNAME           	VARCHAR2(20)						NOT NULL UNIQUE,
+	MB_ACCEPT_E      	    CHAR(1)  DEFAULT 'Y'				NOT NULL,
+	MB_POINT			    NUMBER DEFAULT 0          	    	NOT NULL,
+	MB_DATE_SUB            	DATE  DEFAULT SYSDATE   	    	NOT NULL,
+	MB_DATE_UP         	    DATE  DEFAULT SYSDATE	        	NOT NULL,  
+	MB_DATE_LAST   	        DATE  DEFAULT SYSDATE    	        NOT NULL,
+	MB_AUTHCODE	    	    CHAR(1) DEFAULT 'N'				    NOT NULL,
+	MB_SESSION_KEY	        VARCHAR2(50),
+	MB_SESSION_LIMIT	    TIMESTAMP
+);
+
+FOREIGN KEY(CG_CODE_PRT) REFERENCES CATEGORY_TBL(CG_CODE)
+--2. 카테고리 테이블
+CREATE TABLE CATEGORY_TBL (
+    CG_CODE       			VARCHAR2(20)        				PRIMARY KEY,
+    CG_CODE_PRT     		VARCHAR2(20),                                          
+    CG_NAME           		VARCHAR2(50)         				NOT NULL,
+    FOREIGN KEY(CG_CODE_PRT) REFERENCES CATEGORY_TBL(CG_CODE)
+);
+
+--3. 상품 테이블
+ FOREIGN KEY(CG_CODE) REFERENCES CATEGORY_TBL(CG_CODE)
+CREATE TABLE PRODUCT_TBL(
+    PDT_NUM					NUMBER								PRIMARY KEY, 
+    CG_CODE					VARCHAR2(20)						NOT NULL, 
+    CG_CODE_PRT             VARCHAR2(20)                        NOT NULL, 
+    PDT_NAME				VARCHAR2(50)						NOT NULL,
+    PDT_PRICE				NUMBER								NOT NULL,
+    PDT_DISCOUNT			NUMBER								NOT NULL,
+    PDT_COMPANY		    	VARCHAR2(30)						NOT NULL,
+    PDT_DETAIL				VARCHAR2(4000)					    NOT NULL,
+    PDT_IMG					VARCHAR2(200)						NOT NULL,
+    PDT_AMOUNT			    NUMBER								NOT NULL,
+    PDT_BUY					CHAR(1)								NOT NULL,
+    PDT_DATE_SUB			DATE 						    	NOT NULL,
+    PDT_DATE_UP		    	DATE DEFAULT SYSDATE			    NOT NULL,
+    FOREIGN KEY(CG_CODE) REFERENCES CATEGORY_TBL(CG_CODE)
+);       
+ FOREIGN KEY(PDT_NUM) REFERENCES PRODUCT_TBL(PDT_NUM),
+ FOREIGN KEY(MB_ID)  REFERENCES MEMBER_TBL(MB_ID)
+--4. 장바구니 테이블 
+CREATE TABLE CART_TBL(
+	CART_CODE				NUMBER								PRIMARY KEY,			
+	PDT_NUM				    NUMBER								NOT NULL,
+	MB_ID					VARCHAR2(15)						NOT NULL,
+	CART_AMOUNT			    NUMBER								NOT NULL,
+   FOREIGN KEY(PDT_NUM) REFERENCES PRODUCT_TBL(PDT_NUM),
+ FOREIGN KEY(MB_ID)  REFERENCES MEMBER_TBL(MB_ID)
+);
+ FOREIGN KEY(MB_ID) REFERENCES MEMBER_TBL(MB_ID)
+--5. 주문 테이블
+CREATE TABLE ORDER_TBL(
+	ODR_CODE				NUMBER								PRIMARY KEY,
+	MB_ID					VARCHAR2(15)						NOT NULL,
+	ODR_NAME				VARCHAR2(30)						NOT NULL,
+	ODR_ZIPCODE		    	CHAR(5)								NOT NULL,
+	ODR_ADDR				VARCHAR2(50)						NOT NULL,
+	ODR_ADDR_D			    VARCHAR2(50)						NOT NULL,
+	ODR_PHONE				VARCHAR2(20)						NOT NULL,
+	ODR_TOTALPRICE		    NUMBER								NOT NULL,
+	ODR_DATE				DATE DEFAULT SYSDATE			    NOT NULL,
+    delivery                varchar2(20)                   default '배송준비',
+   FOREIGN KEY(MB_ID) REFERENCES MEMBER_TBL(MB_ID)
+);	
+alter table ORDER_TBL add(delivery    varchar2(20)    default '배송준비');
+
+PRIMARY KEY (ODR_CODE, PDT_NUM)
+--6. 주문 상세 테이블
+CREATE TABLE ORDER_DETAIL_TBL(
+	ODR_CODE				NUMBER								NOT NULL,
+	PDT_NUM				    NUMBER								NOT NULL,
+	ODR_AMOUNT			    NUMBER								NOT NULL,
+	ODR_PRICE				NUMBER								NOT NULL,
+	 PRIMARY KEY (ODR_CODE, PDT_NUM)
+);
+ FOREIGN KEY(MB_ID) REFERENCES MEMBER_TBL(MB_ID)
+--7. 게시판 테이블 
+CREATE TABLE BOARD_TBL(
+	BRD_NUM				    NUMBER								PRIMARY KEY, 
+	MB_ID					VARCHAR2(15)						NOT NULL,
+	BRD_TITLE				VARCHAR2(100)						NOT NULL,
+	BRD_CONTENT		        VARCHAR2(4000)					    NOT NULL,
+	BRD_DATE_REG			DATE DEFAULT SYSDATE		    	NOT NULL,
+    FOREIGN KEY(MB_ID) REFERENCES MEMBER_TBL(MB_ID)
+);
+ FOREIGN KEY(MB_ID) REFERENCES  MEMBER_TBL(MB_ID)
+--8. 상품후기 테이블 
+CREATE TABLE REVIEW_TBL(
+	REV_NUM					NUMBER								PRIMARY KEY, 
+	MB_ID					VARCHAR2(15)						NOT NULL,
+	PDT_NUM				    NUMBER								NOT NULL,
+	REV_CONTENT			    VARCHAR2(200)						NOT NULL,
+	REV_SCORE				NUMBER								NOT NULL,
+	REV_DATE_REG		    DATE DEFAULT SYSDATE			    NOT NULL,
+   FOREIGN KEY(MB_ID) REFERENCES  MEMBER_TBL(MB_ID)
+);
+insert into REVIEW_TBL(REV_NUM, MB_ID, PDT_NUM, REV_CONTENT, REV_SCORE, REV_DATE_REG) values('1','a1234','1','dd','3','2020.03.06');
+
+--9. 관리자 로그인 테이블
+CREATE TABLE ADMIN_TBL(
+	ADMIN_ID				VARCHAR2(15)						PRIMARY KEY,
+	ADMIN_PW				VARCHAR2(30)						NOT NULL,
+	ADMIN_NAME			    VARCHAR2(15)						NOT NULL,
+	ADMIN_DATE_LATE	    DATE DEFAULT	SYSDATE		        	NOT NULL
+);
+insert into ADMIN_TBL(ADMIN_ID,ADMIN_PW,ADMIN_NAME,ADMIN_DATE_LATE) values('admin','1234','형석',SYSDATE);
+select * from ADMIN_TBL;
+
+/* 테이블 조회 */
+SELECT * FROM MEMBER_TBL;
+SELECT * FROM CATEGORY_TBL;
+SELECT * FROM PRODUCT_TBL;
+SELECT * FROM CART_TBL;
+SELECT * FROM ORDER_TBL;
+SELECT * FROM ORDER_DETAIL_TBL;
+SELECT * FROM BOARD_TBL;
+SELECT * FROM REVIEW_TBL;
+
+drop table MEMBER_TBL;
+drop table CATEGORY_TBL;
+drop table PRODUCT_TBL;
+drop table CART_TBL;
+drop table ORDER_TBL;
+drop table ORDER_DETAIL_TBL;
+drop table BOARD_TBL;
+drop table ADMIN_TBL;
+drop table REVIEW_TBL;
+commit;
+
+
+SELECT * FROM CATEGORY_TBL;
+INSERT INTO CATEGORY_TBL
+	VALUES('1000', NULL, 'TOP');
+INSERT INTO CATEGORY_TBL
+	VALUES('2000', NULL, 'PANTS');
+INSERT INTO CATEGORY_TBL
+	VALUES('3000', NULL, 'SHIRTS');
+INSERT INTO CATEGORY_TBL
+	VALUES('4000', NULL, 'OUTER');
+INSERT INTO CATEGORY_TBL
+	VALUES('5000', NULL, 'SHOES');
+INSERT INTO CATEGORY_TBL
+	VALUES('1100', 1000, '맨투맨');
+INSERT INTO CATEGORY_TBL
+	VALUES('1200', 1000, '니트');
+INSERT INTO CATEGORY_TBL
+	VALUES('1300', 1000, '긴팔티');
+INSERT INTO CATEGORY_TBL
+	VALUES('2100', 2000, '슬랙스');
+INSERT INTO CATEGORY_TBL
+	VALUES('2200', 2000, '면바지');
+INSERT INTO CATEGORY_TBL
+	VALUES('2300', 2000, '청바지');
+INSERT INTO CATEGORY_TBL
+	VALUES('3100', 3000, '베이직');
+INSERT INTO CATEGORY_TBL
+	VALUES('3200', 3000, '청난방');
+INSERT INTO CATEGORY_TBL
+	VALUES('3300', 3000, '체크,패턴');
+INSERT INTO CATEGORY_TBL
+	VALUES('4100', 4000, '패딩');
+INSERT INTO CATEGORY_TBL
+	VALUES('4200', 4000, '코트');
+INSERT INTO CATEGORY_TBL
+	VALUES('4300', 4000, '수트');
+
+DELETE FROM CATEGORY_TBL WHERE CG_CODE='1300';
+update CATEGORY_TBL set CG_NAME='체크,패턴' WHERE CG_CODE='3300';
+
+
+/* 시퀀스 생성 및 삭제 */
+-- 1-1. 상품테이블_상품코드 시퀀스 생성
+create sequence seq_pdt_num
+start with 1
+increment by 1;
+
+-- 1-2. 시퀀스 삭제
+drop SEQUENCE seq_pdt_num;
+
+-- 2-1. 장바구니테이블_장바구니코드 시퀀스 생성
+create sequence seq_cart_code
+start with 1
+increment by 1;
+
+-- 2-2. 시퀀스 삭제
+drop SEQUENCE seq_cart_code;
+
+-- 3-1. 주문테이블_주문코드 시퀀스 생성
+create sequence seq_odr_code
+start with 1
+increment by 1;
+
+--3-2. 시퀀스 삭제
+drop SEQUENCE seq_odr_code;
+
+--4-1. 주문테이블_주문코드 시퀀스 생성
+create sequence seq_rev_num
+start with 1
+increment by 1;
+
+--4-2. 시퀀스 삭제
+drop SEQUENCE seq_rev_num;
+
+
+--  주문테이블에 들어오면 물품 테이블에서 개수 감소시키는 트리거
+CREATE OR REPLACE TRIGGER trg_order 
+   AFTER INSERT 
+   ON order_detail_tbl
+   FOR EACH ROW 
+DECLARE
+   v_odr_amount NUMBER;
+   v_pdt_num NVARCHAR2(50);
+BEGIN
+   DBMS_OUTPUT.PUT_LINE('trg_order를 실행합니다.');
+   -- 사용자가 입력한 구매 수량을 v_orderAmount에 저장
+   SELECT :NEW.odr_amount INTO v_odr_amount FROM DUAL;
+   -- 사용자가 구매한 물품명을 v_prodName에 저장
+   SELECT :NEW.pdt_num INTO v_pdt_num FROM DUAL;
+   -- 주문 수량만큼 수량 감소
+   UPDATE product_tbl SET pdt_amount = pdt_amount - v_odr_amount 
+       WHERE pdt_num = v_pdt_num ;
+END;
+
+-- 커밋
+commit;
+alter table ADMIN_TBL drop constraint SCOTT.SYS_C0011240;
+
