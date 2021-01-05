@@ -115,12 +115,12 @@ public class AdproductController {
 		public void imgUpload(HttpServletRequest req, HttpServletResponse res, MultipartFile upload) {
 			logger.info("imgUpload 실행");
 			
-			OutputStream out = null;
+			OutputStream out = null; //데이터를 출력 할 때
 			PrintWriter printWriter = null;
 			
 			// 설정
-			res.setCharacterEncoding("utf-8");
-			res.setContentType("text/html;charset=utf-8");
+			res.setCharacterEncoding("utf-8"); //서블릿에서 화면에 데이터를 출력하기 위해서 사용 
+			res.setContentType("text/html;charset=utf-8"); //브라우저마다 문자코드를 해석하는 기준이 다르기에 utf-8로 사용하겠다는 코드(제대로 한글을 출력하기 위해)
 			
 			try {
 				// 전송할 파일 정보를 가져옴

@@ -35,6 +35,7 @@
 		<interceptor>
 			<mapping path="/member/checkPw"/>
 			<mapping path="/member/delete"/>
+			<mapping path="/product/read"/>
 			<mapping path="/board/*"/>
 			<mapping path="/cart/*"/>
 			<mapping path="/order/*"/>

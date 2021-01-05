@@ -91,6 +91,8 @@ $(document).ready(function() {
 
 	});
 });
+
+
 /* 총 가격, 할인 가격 변경 */ 
 var updatePrice = function(){
 

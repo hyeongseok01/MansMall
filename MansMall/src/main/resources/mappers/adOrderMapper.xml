@@ -11,8 +11,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 	 odr_addr, odr_zipcode, odr_phone, odr_totalprice, odr_date, delivery
 		 from (select odr_addr_d, odr_code, odr_name, mb_id,
 		 	 odr_addr, odr_zipcode, odr_phone, odr_totalprice, odr_date, delivery,
-		 		row_number() over (order by odr_code asc) p_seq from order_tbl)
+		 		row_number() over (order by odr_code desc) p_seq from order_tbl)
 			where p_seq between #{rowStart} and #{rowEnd}
+			order by odr_date desc
 	</select>
 	
 	<!-- 주문 개수 -->

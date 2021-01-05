@@ -70,6 +70,7 @@ public class CartController {
 		}
 		return entity;
 	}
+	
 	/*장바구니 여러개 담기*/ 
 	@ResponseBody
 	@RequestMapping(value="addMany", method=RequestMethod.POST)

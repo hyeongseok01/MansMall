@@ -56,10 +56,11 @@ public class AdOrderController {
 		model.addAttribute("pm", pm);
 	}
 	//배송현황 수정
+	
 	@PostMapping("modify")
 	public ResponseEntity<String> deliveryModify(int odr_code, String delivery){
 		
-		logger.info("modify실행중");
+		logger.info("deliveryModify 실행중");
 		
 		ResponseEntity<String> entity = null;
 		
